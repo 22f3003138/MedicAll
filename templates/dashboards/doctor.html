@@ -1,31 +1,69 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header bg-success text-white">Doctor Dashboard</div>
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0">Doctor Dashboard</h4>
+    </div>
     <div class="card-body">
-        <h5>Welcome, {{ current_user.name }}</h5>
-        <p>This is the protected Doctor area.</p>
-        <hr>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">My Appointments</h5>
-                        <p class="card-text">View upcoming appointments.</p>
-                        <a href="#" class="btn btn-primary">View</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Availability</h5>
-                        <p class="card-text">Update your schedule.</p>
-                        <a href="#" class="btn btn-primary">Update</a>
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5>Welcome, {{ current_user.name }}</h5>
+            <a href="{{ url_for('doctor.availability') }}" class="btn btn-outline-success">Manage Availability</a>
+        </div>
+
+        <h5 class="mb-3">Upcoming Appointments</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Patient</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                    <tr>
+                        <td>{{ appt.appointment_start.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {{ appt.patient.user.name }}
+                            <a href="{{ url_for('doctor.patient_history', id=appt.patient_id) }}"
+                                class="btn btn-xs btn-info ms-2" style="font-size: 0.7rem;">History</a>
+                        </td>
+                        <td>{{ appt.reason }}</td>
+                        <td>
+                            <span
+                                class="badge bg-{{ 'success' if appt.status == 'COMPLETED' else 'warning' if appt.status == 'BOOKED' else 'danger' }}">
+                                {{ appt.status }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if appt.status == 'BOOKED' %}
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('doctor.treatment', id=appt.id) }}"
+                                    class="btn btn-sm btn-primary">Treat</a>
+                                <form action="{{ url_for('doctor.update_status', id=appt.id) }}" method="POST"
+                                    class="d-inline">
+                                    <input type="hidden" name="status" value="CANCELLED">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Cancel this appointment?')">Cancel</button>
+                                </form>
+                            </div>
+                            {% elif appt.status == 'COMPLETED' %}
+                            <a href="{{ url_for('doctor.treatment', id=appt.id) }}"
+                                class="btn btn-sm btn-secondary">View Record</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No upcoming appointments.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

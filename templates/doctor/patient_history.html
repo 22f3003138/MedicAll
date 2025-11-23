@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Medical History: {{ patient.user.name }}</h3>
+    <a href="{{ url_for('doctor.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <strong>Gender:</strong> {{ patient.gender }}
+            </div>
+            <div class="col-md-4">
+                <strong>DOB:</strong> {{ patient.dob }}
+            </div>
+            <div class="col-md-4">
+                <strong>Phone:</strong> {{ patient.phone }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="timeline">
+    {% for appt in appointments %}
+    {% if appt.treatment %}
+    <div class="card mb-3 border-primary">
+        <div class="card-header bg-light d-flex justify-content-between">
+            <span>{{ appt.appointment_start.strftime('%Y-%m-%d') }} - Dr. {{ appt.doctor.user.name }}</span>
+            <span class="badge bg-success">Completed</span>
+        </div>
+        <div class="card-body">
+            <h6 class="card-title text-primary">Diagnosis</h6>
+            <p class="card-text">{{ appt.treatment.diagnosis }}</p>
+
+            <h6 class="card-title text-success">Prescription</h6>
+            <p class="card-text">{{ appt.treatment.prescription }}</p>
+
+            {% if appt.treatment.notes %}
+            <h6 class="card-title text-muted">Notes</h6>
+            <p class="card-text small">{{ appt.treatment.notes }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="alert alert-info">No medical history found.</div>
+    {% endfor %}
+</div>
+{% endblock %}
