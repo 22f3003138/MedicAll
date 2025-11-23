@@ -27,10 +27,12 @@ def update_status(id):
     appointment = db.session.get(Appointment, id)
     if appointment and appointment.doctor_id == current_user.doctor_profile.id:
         new_status = request.form.get('status')
-        if new_status in [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED]:
+        if appointment.can_transition_to(new_status):
             appointment.status = new_status
             db.session.commit()
             flash(f'Appointment marked as {new_status}')
+        else:
+            flash('Invalid status transition')
     return redirect(url_for('doctor.dashboard'))
 
 @doctor.route('/appointments/<int:id>/treatment', methods=['GET', 'POST'])
@@ -52,7 +54,7 @@ def treatment(id):
         treatment.doctor_notes = request.form.get('doctor_notes')
         
         # Auto-complete appointment if adding treatment
-        if appointment.status == AppointmentStatus.BOOKED:
+        if appointment.can_transition_to(AppointmentStatus.COMPLETED):
             appointment.status = AppointmentStatus.COMPLETED
             
         db.session.commit()

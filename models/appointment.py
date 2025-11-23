@@ -22,7 +22,26 @@ class Appointment(db.Model):
     
     __table_args__ = (
         db.Index('ix_doctor_start', 'doctor_id', 'appointment_start'),
+        db.UniqueConstraint('doctor_id', 'appointment_start', name='uq_doctor_appointment_slot'),
     )
+    
+    def can_transition_to(self, new_status):
+        if self.status == new_status:
+            return True
+        
+        # Cannot change from COMPLETED or CANCELLED
+        if self.status in [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED]:
+            return False
+            
+        # Can cancel BOOKED
+        if new_status == AppointmentStatus.CANCELLED:
+            return self.status == AppointmentStatus.BOOKED
+            
+        # Can complete BOOKED
+        if new_status == AppointmentStatus.COMPLETED:
+            return self.status == AppointmentStatus.BOOKED
+            
+        return False
     
     def __repr__(self):
         return f'<Appointment {self.id} - Patient:{self.patient_id} Doctor:{self.doctor_id}>'

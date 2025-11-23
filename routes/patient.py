@@ -87,21 +87,28 @@ def book_slot(slot_id):
         status=AppointmentStatus.BOOKED
     )
     
-    db.session.add(appointment)
-    db.session.commit()
+    try:
+        db.session.add(appointment)
+        db.session.commit()
+        flash('Appointment booked successfully')
+    except Exception as e:
+        db.session.rollback()
+        flash('This slot was just booked by someone else. Please choose another.')
+        return redirect(url_for('patient.book_doctor', doctor_id=slot.doctor.user_id))
     
-    flash('Appointment booked successfully')
     return redirect(url_for('patient.dashboard'))
 
 @patient.route('/appointments/<int:id>/cancel', methods=['POST'])
 def cancel_appointment(id):
     appointment = db.session.get(Appointment, id)
     if appointment and appointment.patient_id == current_user.patient_profile.id:
-        if appointment.status == AppointmentStatus.BOOKED:
+        if appointment.can_transition_to(AppointmentStatus.CANCELLED):
             appointment.status = AppointmentStatus.CANCELLED
             appointment.canceled_by = 'PATIENT'
             db.session.commit()
             flash('Appointment cancelled')
+        else:
+            flash('Cannot cancel this appointment')
     return redirect(url_for('patient.dashboard'))
 
 @patient.route('/history')
