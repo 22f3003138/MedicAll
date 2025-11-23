@@ -32,6 +32,13 @@ login_manager.login_view = 'auth.login'
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    from flask import request, jsonify, redirect, url_for
+    if request.path.startswith('/api'):
+        return jsonify({'error': 'Unauthorized'}), 401
+    return redirect(url_for('auth.login'))
+
 from routes.auth import auth as auth_blueprint
 app.register_blueprint(auth_blueprint)
 
@@ -46,6 +53,9 @@ app.register_blueprint(doctor_blueprint)
 
 from routes.patient import patient as patient_blueprint
 app.register_blueprint(patient_blueprint)
+
+from routes.api import api as api_blueprint
+app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])

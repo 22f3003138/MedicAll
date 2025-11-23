@@ -45,3 +45,15 @@ class Appointment(db.Model):
     
     def __repr__(self):
         return f'<Appointment {self.id} - Patient:{self.patient_id} Doctor:{self.doctor_id}>'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'patient_name': self.patient.user.name,
+            'doctor_name': self.doctor.user.name,
+            'department': self.doctor.department.name if self.doctor.department else None,
+            'start_time': self.appointment_start.isoformat(),
+            'end_time': self.appointment_end.isoformat(),
+            'status': self.status,
+            'reason': self.reason
+        }

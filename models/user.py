@@ -28,3 +28,17 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'email': self.email,
+            'name': self.name,
+            'role': self.role,
+            'is_active': self.is_active
+        }
+        if self.role == Role.DOCTOR and self.doctor_profile:
+            data.update(self.doctor_profile.to_dict())
+        elif self.role == Role.PATIENT and self.patient_profile:
+            data.update(self.patient_profile.to_dict())
+        return data

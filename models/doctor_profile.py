@@ -12,7 +12,15 @@ class DoctorProfile(db.Model):
     bio = db.Column(db.Text)
     is_blacklisted = db.Column(db.Boolean, default=False)
     
-    user = db.relationship("User", back_populates="doctor_profile")
+    user = db.relationship('User', back_populates='doctor_profile')
+
+    def to_dict(self):
+        return {
+            'department': self.department.name if self.department else None,
+            'qualification': self.qualification,
+            'bio': self.bio,
+            'phone': self.phone
+        }
     availabilities = db.relationship("DoctorAvailability", back_populates="doctor", cascade="all, delete-orphan")
     appointments = db.relationship("Appointment", back_populates="doctor")
     

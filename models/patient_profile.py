@@ -12,7 +12,15 @@ class PatientProfile(db.Model):
     address = db.Column(db.Text)
     is_blacklisted = db.Column(db.Boolean, default=False)
     
-    user = db.relationship("User", back_populates="patient_profile")
+    user = db.relationship('User', back_populates='patient_profile')
+
+    def to_dict(self):
+        return {
+            'phone': self.phone,
+            'dob': self.dob.isoformat() if self.dob else None,
+            'gender': self.gender,
+            'address': self.address
+        }
     appointments = db.relationship("Appointment", back_populates="patient")
     
     def __repr__(self):
