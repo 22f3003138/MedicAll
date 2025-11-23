@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from models import db, User, Appointment, Treatment, DoctorAvailability, Role, AppointmentStatus, PatientProfile
 from datetime import datetime, timedelta, date
+from utils import validate_required_fields, validate_date, validate_time_range, ValidationError, sanitize_input
 
 doctor = Blueprint('doctor', __name__, url_prefix='/doctor')
 
@@ -38,12 +39,19 @@ def update_status(id):
     appointment = db.session.get(Appointment, id)
     if appointment and appointment.doctor_id == current_user.doctor_profile.id:
         new_status = request.form.get('status')
+        
+        # Validate status is provided
+        if not new_status:
+            flash('Status is required', 'danger')
+            return redirect(url_for('doctor.dashboard'))
+        
+        # Validate valid enum value (AppointmentStatus will validate this via can_transition_to)
         if appointment.can_transition_to(new_status):
             appointment.status = new_status
             db.session.commit()
-            flash(f'Appointment marked as {new_status}')
+            flash(f'Appointment marked as {new_status}', 'success')
         else:
-            flash('Invalid status transition')
+            flash('Invalid status transition', 'warning')
     return redirect(url_for('doctor.dashboard'))
 
 @doctor.route('/appointments/<int:id>/treatment', methods=['GET', 'POST'])
@@ -55,21 +63,40 @@ def treatment(id):
     treatment = appointment.treatment
     
     if request.method == 'POST':
+        diagnosis = sanitize_input(request.form.get('diagnosis'))
+        prescription = sanitize_input(request.form.get('prescription'))
+        notes = sanitize_input(request.form.get('notes'))
+        doctor_notes = sanitize_input(request.form.get('doctor_notes'))
+        
+        # Validate required fields
+        try:
+            validate_required_fields(request.form, ['diagnosis', 'prescription'])
+            
+            # Minimum length validation
+            if len(diagnosis) < 10:
+                raise ValidationError("Diagnosis must be at least 10 characters")
+            if len(prescription) < 10:
+                raise ValidationError("Prescription must be at least 10 characters")
+            
+        except ValidationError as e:
+            flash(str(e), 'danger')
+            return render_template('doctor/treatment.html', appointment=appointment, treatment=treatment)
+        
         if not treatment:
             treatment = Treatment(appointment_id=appointment.id)
             db.session.add(treatment)
             
-        treatment.diagnosis = request.form.get('diagnosis')
-        treatment.prescription = request.form.get('prescription')
-        treatment.notes = request.form.get('notes')
-        treatment.doctor_notes = request.form.get('doctor_notes')
+        treatment.diagnosis = diagnosis
+        treatment.prescription = prescription
+        treatment.notes = notes
+        treatment.doctor_notes = doctor_notes
         
         # Auto-complete appointment if adding treatment
         if appointment.can_transition_to(AppointmentStatus.COMPLETED):
             appointment.status = AppointmentStatus.COMPLETED
             
         db.session.commit()
-        flash('Treatment record saved successfully')
+        flash('Treatment record saved successfully', 'success')
         return redirect(url_for('doctor.dashboard'))
         
     return render_template('doctor/treatment.html', appointment=appointment, treatment=treatment)
@@ -92,23 +119,64 @@ def availability():
         start_time_str = request.form.get('start_time')
         end_time_str = request.form.get('end_time')
         
-        avail_date = datetime.strptime(date_str, '%Y-%m-%d').date()
-        start_time = datetime.strptime(start_time_str, '%H:%M').time()
-        end_time = datetime.strptime(end_time_str, '%H:%M').time()
-        
-        # Basic validation
-        if avail_date < datetime.now().date():
-            flash('Cannot set availability in the past')
-        else:
-            avail = DoctorAvailability(
+        # Validate required fields and formats
+        try:
+            validate_required_fields(request.form, ['date', 'start_time', 'end_time'])
+            
+            # Parse and validate date
+            avail_date = validate_date(date_str, allow_future=True, allow_past=False)
+            
+            # Parse time fields
+            start_time = datetime.strptime(start_time_str, '%H:%M').time()
+            end_time = datetime.strptime(end_time_str, '%H:%M').time()
+            
+            # Validate time range
+            validate_time_range(start_time, end_time)
+            
+            # Check for overlapping slots
+            existing = DoctorAvailability.query.filter_by(
                 doctor_id=current_user.doctor_profile.id,
-                date=avail_date,
-                start_time=start_time,
-                end_time=end_time
-            )
-            db.session.add(avail)
-            db.session.commit()
-            flash('Availability slot added')
+                date=avail_date
+            ).filter(
+                db.or_(
+                    db.and_(
+                        DoctorAvailability.start_time <= start_time,
+                        DoctorAvailability.end_time > start_time
+                    ),
+                    db.and_(
+                        DoctorAvailability.start_time < end_time,
+                        DoctorAvailability.end_time >= end_time
+                    )
+                )
+            ).first()
+            
+            if existing:
+                raise ValidationError("This time slot overlaps with an existing availability")
+            
+        except ValueError as e:
+            flash(f'Invalid time format: {str(e)}', 'danger')
+            today = datetime.now().date()
+            availabilities = DoctorAvailability.query.filter_by(doctor_id=current_user.doctor_profile.id)\
+                .filter(DoctorAvailability.date >= today)\
+                .order_by(DoctorAvailability.date, DoctorAvailability.start_time).all()
+            return render_template('doctor/availability.html', availabilities=availabilities, today=today)
+        except ValidationError as e:
+            flash(str(e), 'danger')
+            today = datetime.now().date()
+            availabilities = DoctorAvailability.query.filter_by(doctor_id=current_user.doctor_profile.id)\
+                .filter(DoctorAvailability.date >= today)\
+                .order_by(DoctorAvailability.date, DoctorAvailability.start_time).all()
+            return render_template('doctor/availability.html', availabilities=availabilities, today=today)
+        
+        avail = DoctorAvailability(
+            doctor_id=current_user.doctor_profile.id,
+            date=avail_date,
+            start_time=start_time,
+            end_time=end_time
+        )
+        db.session.add(avail)
+        db.session.commit()
+        flash('Availability slot added', 'success')
             
         return redirect(url_for('doctor.availability'))
         
@@ -126,5 +194,5 @@ def delete_availability(id):
     if avail and avail.doctor_id == current_user.doctor_profile.id:
         db.session.delete(avail)
         db.session.commit()
-        flash('Availability slot removed')
+        flash('Availability slot removed', 'success')
     return redirect(url_for('doctor.availability'))

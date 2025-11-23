@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from models import db, User, DoctorProfile, PatientProfile, Appointment, Department, Role
 from werkzeug.security import generate_password_hash
+from utils import validate_email, validate_password, validate_required_fields, ValidationError, sanitize_input
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -46,15 +47,32 @@ def doctors():
 @admin.route('/doctors/add', methods=['GET', 'POST'])
 def add_doctor():
     if request.method == 'POST':
-        email = request.form.get('email')
-        name = request.form.get('name')
+        email = sanitize_input(request.form.get('email'))
+        name = sanitize_input(request.form.get('name'))
         password = request.form.get('password')
         dept_id = request.form.get('department_id')
-        qualification = request.form.get('qualification')
+        qualification = sanitize_input(request.form.get('qualification', ''))
+        
+        # Validate all fields
+        try:
+            validate_required_fields(request.form, ['email', 'name', 'password', 'department_id'])
+            validate_email(email)
+            validate_password(password)
+            
+            # Check department exists
+            dept = db.session.get(Department, dept_id)
+            if not dept:
+                raise ValidationError("Invalid department selected")
+                
+        except ValidationError as e:
+            flash(str(e), 'danger')
+            departments = Department.query.all()
+            return render_template('admin/doctor_form.html', departments=departments)
         
         if User.query.filter_by(email=email).first():
-            flash('Email already exists')
-            return redirect(url_for('admin.add_doctor'))
+            flash('Email already exists', 'danger')
+            departments = Department.query.all()
+            return render_template('admin/doctor_form.html', departments=departments)
             
         user = User(email=email, name=name, role=Role.DOCTOR)
         user.set_password(password)
@@ -65,7 +83,7 @@ def add_doctor():
         db.session.add(profile)
         db.session.commit()
         
-        flash('Doctor added successfully')
+        flash('Doctor added successfully', 'success')
         return redirect(url_for('admin.doctors'))
         
     departments = Department.query.all()
@@ -78,16 +96,48 @@ def edit_doctor(id):
         return "Not Found", 404
         
     if request.method == 'POST':
-        doctor.name = request.form.get('name')
-        doctor.email = request.form.get('email')
-        doctor.doctor_profile.department_id = request.form.get('department_id')
-        doctor.doctor_profile.qualification = request.form.get('qualification')
+        name = sanitize_input(request.form.get('name'))
+        email = sanitize_input(request.form.get('email'))
+        dept_id = request.form.get('department_id')
+        qualification = sanitize_input(request.form.get('qualification', ''))
+        password = request.form.get('password')
         
-        if request.form.get('password'):
-            doctor.set_password(request.form.get('password'))
+        # Validate fields
+        try:
+            validate_required_fields(request.form, ['name', 'email', 'department_id'])
+            validate_email(email)
+            
+            # Check department exists
+            dept = db.session.get(Department, dept_id)
+            if not dept:
+                raise ValidationError("Invalid department selected")
+            
+            # Validate password if provided
+            if password:
+                validate_password(password)
+                
+        except ValidationError as e:
+            flash(str(e), 'danger')
+            departments = Department.query.all()
+            return render_template('admin/doctor_form.html', doctor=doctor, departments=departments)
+        
+        # Check email uniqueness (excluding current doctor)
+        existing = User.query.filter_by(email=email).first()
+        if existing and existing.id != doctor.id:
+            flash('Email already exists', 'danger')
+            departments = Department.query.all()
+            return render_template('admin/doctor_form.html', doctor=doctor, departments=departments)
+        
+        doctor.name = name
+        doctor.email = email
+        doctor.doctor_profile.department_id = dept_id
+        doctor.doctor_profile.qualification = qualification
+        
+        if password:
+            doctor.set_password(password)
             
         db.session.commit()
-        flash('Doctor updated successfully')
+        flash('Doctor updated successfully', 'success')
         return redirect(url_for('admin.doctors'))
         
     departments = Department.query.all()
@@ -99,7 +149,7 @@ def delete_doctor(id):
     if doctor and doctor.role == Role.DOCTOR:
         db.session.delete(doctor)
         db.session.commit()
-        flash('Doctor deleted successfully')
+        flash('Doctor deleted successfully', 'success')
     return redirect(url_for('admin.doctors'))
 
 @admin.route('/patients')
@@ -118,7 +168,7 @@ def toggle_patient_status(id):
         patient.patient_profile.is_blacklisted = not patient.patient_profile.is_blacklisted
         db.session.commit()
         status = "blacklisted" if patient.patient_profile.is_blacklisted else "activated"
-        flash(f'Patient {status} successfully')
+        flash(f'Patient {status} successfully', 'success')
     return redirect(url_for('admin.patients'))
 
 @admin.route('/appointments')

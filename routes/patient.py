@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from models import db, User, Appointment, DoctorAvailability, Role, AppointmentStatus, Department, DoctorProfile
 from datetime import datetime
 from sqlalchemy import func
+from utils import validate_phone, validate_date, validate_gender, validate_required_fields, ValidationError, sanitize_input
 
 patient = Blueprint('patient', __name__, url_prefix='/patient')
 
@@ -34,14 +35,41 @@ def dashboard():
 @patient.route('/profile', methods=['GET', 'POST'])
 def profile():
     if request.method == 'POST':
-        current_user.name = request.form.get('name')
-        current_user.patient_profile.phone = request.form.get('phone')
-        current_user.patient_profile.address = request.form.get('address')
-        current_user.patient_profile.gender = request.form.get('gender')
-        current_user.patient_profile.dob = datetime.strptime(request.form.get('dob'), '%Y-%m-%d').date() if request.form.get('dob') else None
+        name = sanitize_input(request.form.get('name'))
+        phone = sanitize_input(request.form.get('phone'))
+        address = sanitize_input(request.form.get('address'))
+        gender = request.form.get('gender')
+        dob_str = request.form.get('dob')
+        
+        # Validate fields
+        try:
+            validate_required_fields(request.form, ['name', 'phone'])
+            validate_phone(phone)
+            validate_gender(gender)
+            
+            # Validate date of birth if provided
+            if dob_str:
+                dob = validate_date(dob_str, allow_future=False)
+                # Check age is reasonable (not in future, not too old)
+                if dob.year < 1900:
+                    raise ValidationError("Date of birth too far in the past")
+                current_user.patient_profile.dob = dob
+            
+            # Validate address length
+            if address and len(address) > 200:
+                raise ValidationError("Address must be at most 200 characters")
+                
+        except ValidationError as e:
+            flash(str(e), 'danger')
+            return render_template('patient/profile.html')
+        
+        current_user.name = name
+        current_user.patient_profile.phone = phone
+        current_user.patient_profile.address = address
+        current_user.patient_profile.gender = gender
         
         db.session.commit()
-        flash('Profile updated successfully')
+        flash('Profile updated successfully', 'success')
         return redirect(url_for('patient.dashboard'))
         
     return render_template('patient/profile.html')
@@ -81,6 +109,21 @@ def book_slot(slot_id):
     slot = db.session.get(DoctorAvailability, slot_id)
     if not slot:
         return "Slot not found", 404
+    
+    # Check if patient is blacklisted
+    if current_user.patient_profile.is_blacklisted:
+        flash('Your account has been restricted. Please contact administrator.', 'danger')
+        return redirect(url_for('patient.dashboard'))
+    
+    # Validate reason
+    reason = sanitize_input(request.form.get('reason'))
+    try:
+        validate_required_fields(request.form, ['reason'])
+        if len(reason) < 5:
+            raise ValidationError("Please provide a detailed reason (minimum 5 characters)")
+    except ValidationError as e:
+        flash(str(e), 'danger')
+        return redirect(url_for('patient.book_doctor', doctor_id=slot.doctor.user_id))
         
     # Check if slot is already booked (basic check)
     existing = Appointment.query.filter_by(
@@ -89,7 +132,7 @@ def book_slot(slot_id):
     ).first()
     
     if existing and existing.status != AppointmentStatus.CANCELLED:
-        flash('This slot is already booked')
+        flash('This slot is already booked', 'warning')
         return redirect(url_for('patient.book_doctor', doctor_id=slot.doctor.user_id))
         
     appointment = Appointment(
@@ -97,17 +140,17 @@ def book_slot(slot_id):
         doctor_id=slot.doctor_id,
         appointment_start=datetime.combine(slot.date, slot.start_time),
         appointment_end=datetime.combine(slot.date, slot.end_time),
-        reason=request.form.get('reason'),
+        reason=reason,
         status=AppointmentStatus.BOOKED
     )
     
     try:
         db.session.add(appointment)
         db.session.commit()
-        flash('Appointment booked successfully')
+        flash('Appointment booked successfully', 'success')
     except Exception as e:
         db.session.rollback()
-        flash('This slot was just booked by someone else. Please choose another.')
+        flash('This slot was just booked by someone else. Please choose another.', 'warning')
         return redirect(url_for('patient.book_doctor', doctor_id=slot.doctor.user_id))
     
     return redirect(url_for('patient.dashboard'))
@@ -120,9 +163,9 @@ def cancel_appointment(id):
             appointment.status = AppointmentStatus.CANCELLED
             appointment.canceled_by = 'PATIENT'
             db.session.commit()
-            flash('Appointment cancelled')
+            flash('Appointment cancelled', 'success')
         else:
-            flash('Cannot cancel this appointment')
+            flash('Cannot cancel this appointment', 'warning')
     return redirect(url_for('patient.dashboard'))
 
 @patient.route('/history')

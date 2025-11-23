@@ -8,11 +8,11 @@
                 {{ 'Edit Doctor' if doctor else 'Add New Doctor' }}
             </div>
             <div class="card-body">
-                <form method="POST">
+                <form method="POST" novalidate>
                     <div class="mb-3">
                         <label for="name" class="form-label">Full Name</label>
                         <input type="text" class="form-control" id="name" name="name"
-                            value="{{ doctor.name if doctor else '' }}" required>
+                            value="{{ doctor.name if doctor else '' }}" minlength="2" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
