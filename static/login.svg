@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+    <rect width="800" height="600" fill="#eef2f6"/>
+    <circle cx="400" cy="300" r="200" fill="#cfe2ff"/>
+    
+    <!-- Abstract Doctor Figure -->
+    <g transform="translate(250, 150)">
+        <!-- Body -->
+        <path d="M150,250 Q150,400 250,400 Q350,400 350,250 L350,200 Q350,150 300,150 L200,150 Q150,150 150,200 Z" fill="#0d6efd"/>
+        <!-- Head -->
+        <circle cx="250" cy="100" r="60" fill="#ffdecb"/>
+        <!-- Stethoscope -->
+        <path d="M250,160 Q150,200 150,300" stroke="#333" stroke-width="10" fill="none"/>
+        <circle cx="150" cy="300" r="15" fill="#666"/>
+        <!-- Cross -->
+        <rect x="320" y="80" width="20" height="60" fill="#fff"/>
+        <rect x="300" y="100" width="60" height="20" fill="#fff"/>
+    </g>
+    
+    <!-- Secure Shield -->
+    <path d="M550,350 L600,350 L600,400 Q600,450 550,480 Q500,450 500,400 L500,350 Z" fill="#198754"/>
+    <path d="M530,400 L550,420 L580,380" stroke="#fff" stroke-width="8" fill="none"/>
+</svg>

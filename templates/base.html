@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedicAll - Hospital Management System</title>
+    <title>MedicAll</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -81,56 +82,94 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow rounded-4 m-3 sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">MedicAll</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand d-flex align-items-center fw-bold text-primary" href="{{ url_for('main.index') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-heart-pulse-fill me-2" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.916-.004L6.16 3.732 4.53 8.655A.5.5 0 0 1 4.066 9H1.475ZM.5 9a.5.5 0 0 1-.428-.742l2.5-6a.5.5 0 0 1 .956.138l.85 2.547 1.27-4.433a.5.5 0 0 1 .964.027L8.46 5.414l.875-2.188a.5.5 0 0 1 .927 0l2.5 6.25A.5.5 0 0 1 12.277 10H15.5a.5.5 0 0 1 0 1h-3.563a.5.5 0 0 1-.464-.314L10.097 6.13l-1.188 2.97a.5.5 0 0 1-.938-.038l-1.267-3.486-1.458 5.103a.5.5 0 0 1-.96-.027l-1.767-4.241L.928 9H.5Z"/>
+                </svg>
+                MedicAll
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link"
-                            href="{% if current_user.role == 'ADMIN' %}{{ url_for('admin.dashboard') }}{% elif current_user.role == 'DOCTOR' %}{{ url_for('doctor.dashboard') }}{% else %}{{ url_for('patient.dashboard') }}{% endif %}">Dashboard</a>
+                    <li class="nav-item me-3">
+                        <a class="nav-link fw-medium"
+                            href="{% if current_user.role == 'ADMIN' %}{{ url_for('admin.dashboard') }}{% elif current_user.role == 'DOCTOR' %}{{ url_for('doctor.dashboard') }}{% else %}{{ url_for('patient.dashboard') }}{% endif %}">
+                            Dashboard
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <span class="nav-link">{{ current_user.name }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-medium" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-1 me-2 d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                                <span class="text-primary fw-bold">{{ current_user.name[0] | upper }}</span>
+                            </div>
+                            {{ current_user.name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
+                            <li><span class="dropdown-header">Signed in as <br><strong>{{ current_user.email }}</strong></span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% if current_user.role == 'PATIENT' %}
+                            <li><a class="dropdown-item" href="{{ url_for('patient.profile') }}">My Profile</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Sign Out</a></li>
+                        </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                        <a class="nav-link fw-medium" href="{{ url_for('auth.login') }}">Login</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary rounded-pill px-4 fw-medium" href="{{ url_for('auth.register') }}">Get Started</a>
                     </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+    {% endblock %}
 
-    <div class="container mt-4 mb-5">
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="toast align-items-center text-white bg-{{ category if category != 'message' else 'info' }} border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
         {% endfor %}
         {% endif %}
         {% endwith %}
+    </div>
 
+    {% block layout_content %}
+    <div class="container mt-4 mb-5">
         {% block content %}{% endblock %}
     </div>
+    {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = toastElList.map(function (toastEl) {
+                return new bootstrap.Toast(toastEl, { delay: 5000 })
+            })
+            toastList.forEach(toast => toast.show());
+        });
+    </script>
+    {% block scripts %}{% endblock %}
 </body>
 
 </html>

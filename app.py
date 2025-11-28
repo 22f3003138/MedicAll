@@ -39,6 +39,11 @@ def unauthorized():
         return jsonify({'error': 'Unauthorized'}), 401
     return redirect(url_for('auth.login'))
 
+@app.errorhandler(404)
+def page_not_found(e):
+    from flask import render_template
+    return render_template('404.html'), 404
+
 from routes.auth import auth as auth_blueprint
 app.register_blueprint(auth_blueprint)
 

@@ -1,104 +1,152 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card mb-4">
-    <div class="card-header bg-info text-white">
-        <h4 class="mb-0">Patient Dashboard</h4>
-    </div>
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <h5>Welcome, {{ current_user.name }}</h5>
-            <div class="btn-group flex-wrap" role="group">
-                <a href="{{ url_for('patient.doctors') }}" class="btn btn-primary">Book Appointment</a>
-                <a href="{{ url_for('patient.profile') }}" class="btn btn-outline-primary">My Profile</a>
-                <a href="{{ url_for('patient.history') }}" class="btn btn-outline-secondary">Medical History</a>
-            </div>
-        </div>
-
-        <h5 class="mb-3">My Appointments</h5>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Doctor</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for appt in appointments %}
-                    <tr>
-                        <td>{{ appt.appointment_start.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td>Dr. {{ appt.doctor.user.name }}</td>
-                        <td>{{ appt.doctor.department.name }}</td>
-                        <td>
-                            <span
-                                class="badge bg-{{ 'success' if appt.status == 'COMPLETED' else 'warning' if appt.status == 'BOOKED' else 'danger' }}">
-                                {{ appt.status }}
-                            </span>
-                        </td>
-                        <td>
-                            {% if appt.status == 'BOOKED' %}
-                            <form action="{{ url_for('patient.cancel_appointment', id=appt.id) }}" method="POST"
-                                class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure you want to cancel?')">Cancel</button>
-                            </form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-4">No appointments found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div class="mb-4">
+    <h2 class="fw-bold text-dark">Patient Dashboard</h2>
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <p class="text-muted mb-0">Welcome back, {{ current_user.name }}</p>
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+            <a href="{{ url_for('patient.doctors') }}" class="btn btn-primary btn-sm shadow-sm rounded-pill px-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/>
+                </svg>
+                Book Appointment
+            </a>
+            <a href="{{ url_for('patient.history') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">History</a>
+            <a href="{{ url_for('patient.profile') }}" class="btn btn-outline-dark btn-sm rounded-pill px-3">Profile</a>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Appointment History</h5>
+<div class="row g-4">
+    <!-- Appointments List -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold mb-0">My Appointments</h5>
+                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ appointments|length }} Active</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4 py-3 text-muted text-uppercase small fw-bold">Time</th>
+                                <th class="py-3 text-muted text-uppercase small fw-bold">Doctor</th>
+                                <th class="py-3 text-muted text-uppercase small fw-bold">Department</th>
+                                <th class="py-3 text-muted text-uppercase small fw-bold">Status</th>
+                                <th class="pe-4 py-3 text-muted text-uppercase small fw-bold text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in appointments %}
+                            <tr>
+                                <td class="ps-4 py-3 fw-medium">{{ appt.appointment_start.strftime('%H:%M') }} <br> <small class="text-muted">{{ appt.appointment_start.strftime('%Y-%m-%d') }}</small></td>
+                                <td class="py-3">
+                                    <div class="fw-bold text-dark">Dr. {{ appt.doctor.user.name }}</div>
+                                </td>
+                                <td class="py-3 text-muted">{{ appt.doctor.department.name }}</td>
+                                <td class="py-3">
+                                    <span class="badge rounded-pill bg-{{ 'success' if appt.status == 'COMPLETED' else 'warning' if appt.status == 'BOOKED' else 'danger' }} bg-opacity-10 text-{{ 'success' if appt.status == 'COMPLETED' else 'warning' if appt.status == 'BOOKED' else 'danger' }} px-3">
+                                        {{ appt.status }}
+                                    </span>
+                                </td>
+                                <td class="pe-4 py-3 text-end">
+                                    {% if appt.status == 'BOOKED' %}
+                                    <form action="{{ url_for('patient.cancel_appointment', id=appt.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Are you sure you want to cancel?')" title="Cancel">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-5">
+                                    <div class="mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-calendar text-light" viewBox="0 0 16 16">
+                                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                                        </svg>
+                                    </div>
+                                    No active appointments.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- History Chart -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3 border-0">
+                <h5 class="card-title fw-bold mb-0">Activity</h5>
             </div>
             <div class="card-body">
-                <canvas id="historyChart" height="100"></canvas>
+                <div class="position-relative" style="height: 300px;">
+                    <canvas id="historyChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
-</div>
-</div>
+{% endblock %}
 
+{% block scripts %}
 <script>
+    Chart.defaults.font.family = "'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif";
+    
     const ctx = document.getElementById('historyChart');
     new Chart(ctx, {
         type: 'line',
         data: {
             labels: {{ history_labels | default([]) | tojson }},
-        datasets: [{
-            label: 'Appointments per Month',
-            data: {{ history_data | default ([]) | tojson }},
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
+            datasets: [{
+                label: 'Appointments',
+                data: {{ history_data | default ([]) | tojson }},
+                fill: true,
+                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                borderColor: '#0dcaf0',
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#0dcaf0',
+                pointBorderWidth: 2
             }]
         },
         options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        borderDash: [2, 4],
+                        color: '#e9ecef',
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
                 }
             }
         }
-    }
     });
 </script>
 {% endblock %}

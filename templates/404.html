@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block navbar %}{% endblock %}
+
+{% block layout_content %}
+<div class="vh-100 d-flex flex-column align-items-center justify-content-center overflow-hidden" style="background-color: #E1EDFD;">
+    <div class="container-fluid px-0 d-flex justify-content-center align-items-center" style="height: 85vh;">
+        <img src="{{ url_for('static', filename='404.jpg') }}" alt="Page Not Found" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+    </div>
+    <div class="text-center pb-5">
+        <h2 class="fw-bold text-dark mb-3">Page Not Found</h2>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary rounded-pill px-5 shadow-sm">Go Back Home</a>
+    </div>
+</div>
+{% endblock %}

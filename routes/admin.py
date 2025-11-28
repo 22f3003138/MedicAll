@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from models import db, User, DoctorProfile, PatientProfile, Appointment, Department, Role
+from models import db, User, DoctorProfile, PatientProfile, Appointment, Department, Role, AppointmentStatus
 from werkzeug.security import generate_password_hash
 from utils import validate_email, validate_password, validate_required_fields, ValidationError, sanitize_input
 
@@ -19,6 +19,15 @@ def dashboard():
     total_patients = User.query.filter_by(role=Role.PATIENT).count()
     total_appointments = Appointment.query.count()
     
+    # Blacklisted Users
+    blacklisted_doctors = DoctorProfile.query.filter_by(is_blacklisted=True).count()
+    blacklisted_patients = PatientProfile.query.filter_by(is_blacklisted=True).count()
+    total_blacklisted = blacklisted_doctors + blacklisted_patients
+    total_active = (total_doctors + total_patients) - total_blacklisted
+    
+    user_status_labels = ['Active Users', 'Blacklisted Users']
+    user_status_data = [total_active, total_blacklisted]
+    
     # Chart Data: Appointments per Department
     dept_stats = db.session.query(Department.name, db.func.count(Appointment.id))\
         .join(DoctorProfile, DoctorProfile.department_id == Department.id)\
@@ -33,12 +42,14 @@ def dashboard():
                          total_patients=total_patients,
                          total_appointments=total_appointments,
                          dept_labels=dept_labels,
-                         dept_data=dept_data)
+                         dept_data=dept_data,
+                         user_status_labels=user_status_labels,
+                         user_status_data=user_status_data)
 
 @admin.route('/doctors')
 def doctors():
     search = request.args.get('search', '')
-    query = User.query.filter_by(role=Role.DOCTOR)
+    query = User.query.filter_by(role=Role.DOCTOR, is_active=True)
     if search:
         query = query.filter(User.name.ilike(f'%{search}%'))
     doctors = query.all()
@@ -147,9 +158,17 @@ def edit_doctor(id):
 def delete_doctor(id):
     doctor = db.session.get(User, id)
     if doctor and doctor.role == Role.DOCTOR:
-        db.session.delete(doctor)
+        # Cancel all booked appointments
+        if doctor.doctor_profile and doctor.doctor_profile.appointments:
+            for appt in doctor.doctor_profile.appointments:
+                if appt.status == AppointmentStatus.BOOKED:
+                    appt.status = AppointmentStatus.CANCELLED
+                    appt.canceled_by = 'ADMIN'
+        
+        doctor.is_active = False
         db.session.commit()
         flash('Doctor deleted successfully', 'success')
+            
     return redirect(url_for('admin.doctors'))
 
 @admin.route('/patients')
