@@ -24,7 +24,7 @@
     <div class="row g-3">
         {% for dept in departments %}
         <div class="col-md-3 col-sm-6">
-            <div class="card h-100 border-0 shadow-sm text-center card-hover">
+            <div class="card h-100 border-0 shadow text-center card-hover bg-white rounded-4">
                 <div class="card-body">
                     <div class="mb-2 text-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-hospital" viewBox="0 0 16 16">
@@ -44,8 +44,8 @@
 <div class="row g-4">
     <!-- Appointments List -->
     <div class="col-lg-8">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+        <div class="card border-0 shadow h-100 bg-white rounded-4 overflow-hidden">
+            <div class="card-header bg-transparent py-3 border-0 d-flex justify-content-between align-items-center">
                 <h5 class="card-title fw-bold mb-0">My Appointments</h5>
                 <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ appointments|length }} Active</span>
             </div>
@@ -120,8 +120,8 @@
     <!-- Charts Column -->
     <div class="col-lg-4">
         <!-- Monthly Activity Chart -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white py-3 border-0">
+        <div class="card border-0 shadow mb-4 bg-white rounded-4">
+            <div class="card-header bg-transparent py-3 border-0">
                 <h5 class="card-title fw-bold mb-0">Monthly Activity</h5>
             </div>
             <div class="card-body">
@@ -132,8 +132,8 @@
         </div>
         
         <!-- Status Distribution Chart -->
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white py-3 border-0">
+        <div class="card border-0 shadow h-100 bg-white rounded-4">
+            <div class="card-header bg-transparent py-3 border-0">
                 <h5 class="card-title fw-bold mb-0">Appointment Status</h5>
             </div>
             <div class="card-body">
