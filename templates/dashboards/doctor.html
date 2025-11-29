@@ -121,16 +121,23 @@
 {% endblock %}
 
 {% block scripts %}
+<script id="status-data" type="application/json">{{ status_data | default([]) | tojson }}</script>
+<script id="status-labels" type="application/json">{{ status_labels | default([]) | tojson }}</script>
+
 <script>
     Chart.defaults.font.family = "'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif";
+    Chart.defaults.color = '#6c757d';
     
     const ctx = document.getElementById('statusChart');
+    const statusData = JSON.parse(document.getElementById('status-data').textContent);
+    const statusLabels = JSON.parse(document.getElementById('status-labels').textContent);
+
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: {{ status_labels | default([]) | tojson }},
+            labels: statusLabels,
             datasets: [{
-                data: {{ status_data | default ([]) | tojson }},
+                data: statusData,
                 backgroundColor: [
                     '#ffc107', // booked
                     '#198754', // done
