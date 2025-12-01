@@ -40,12 +40,10 @@ def update_status(id):
     if appointment and appointment.doctor_id == current_user.doctor_profile.id:
         new_status = request.form.get('status')
         
-        # Validate status is provided
         if not new_status:
             flash('Status is required', 'danger')
             return redirect(url_for('doctor.dashboard'))
         
-        # Validate valid enum value (AppointmentStatus will validate this via can_transition_to)
         if appointment.can_transition_to(new_status):
             appointment.status = new_status
             db.session.commit()
@@ -123,8 +121,6 @@ def patient_history(id):
 
 @doctor.route('/patients')
 def my_patients():
-    # Get distinct patients who have had appointments with this doctor
-    # Using a join to get patient details
     patients = db.session.query(PatientProfile)\
         .join(Appointment, Appointment.patient_id == PatientProfile.id)\
         .filter(Appointment.doctor_id == current_user.doctor_profile.id)\

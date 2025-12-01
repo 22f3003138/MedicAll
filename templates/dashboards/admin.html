@@ -8,7 +8,6 @@
     </div>
 </div>
 
-<!-- Stats Cards -->
 <div class="row g-4 mb-4">
     <div class="col-md-4">
         <div class="card border-0 shadow h-100 overflow-hidden bg-white rounded-4">
@@ -19,13 +18,16 @@
                         <h2 class="display-6 fw-bold text-primary mb-0">{{ total_doctors }}</h2>
                     </div>
                     <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
-                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
+                            <path
+                                d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
                         </svg>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <a href="{{ url_for('admin.doctors') }}" class="text-decoration-none fw-semibold text-primary">Manage Doctors &rarr;</a>
+                    <a href="{{ url_for('admin.doctors') }}"
+                        class="text-decoration-none fw-semibold text-primary">Manage Doctors &rarr;</a>
                 </div>
             </div>
         </div>
@@ -40,13 +42,16 @@
                         <h2 class="display-6 fw-bold text-success mb-0">{{ total_patients }}</h2>
                     </div>
                     <div class="bg-success bg-opacity-10 p-3 rounded-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-heart text-success" viewBox="0 0 16 16">
-                            <path d="M9 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4Zm13.5-8.09c1.387-1.425 4.855 1.07 0 4.277-4.854-3.207-1.387-5.702 0-4.276Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-person-heart text-success" viewBox="0 0 16 16">
+                            <path
+                                d="M9 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4Zm13.5-8.09c1.387-1.425 4.855 1.07 0 4.277-4.854-3.207-1.387-5.702 0-4.276Z" />
                         </svg>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <a href="{{ url_for('admin.patients') }}" class="text-decoration-none fw-semibold text-success">Manage Patients &rarr;</a>
+                    <a href="{{ url_for('admin.patients') }}"
+                        class="text-decoration-none fw-semibold text-success">Manage Patients &rarr;</a>
                 </div>
             </div>
         </div>
@@ -61,14 +66,18 @@
                         <h2 class="display-6 fw-bold text-info mb-0">{{ total_appointments }}</h2>
                     </div>
                     <div class="bg-info bg-opacity-10 p-3 rounded-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-calendar-check text-info" viewBox="0 0 16 16">
-                            <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-calendar-check text-info" viewBox="0 0 16 16">
+                            <path
+                                d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+                            <path
+                                d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
                         </svg>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <a href="{{ url_for('admin.appointments') }}" class="text-decoration-none fw-semibold text-info">View All &rarr;</a>
+                    <a href="{{ url_for('admin.appointments') }}"
+                        class="text-decoration-none fw-semibold text-info">View All &rarr;</a>
                 </div>
             </div>
         </div>
@@ -77,7 +86,6 @@
 
 <!-- Charts -->
 <div class="row g-4">
-    <!-- Doctors by Department -->
     <div class="col-lg-4">
         <div class="card border-0 shadow h-100 bg-white rounded-4">
             <div class="card-header bg-transparent py-3 border-0">
@@ -91,7 +99,6 @@
         </div>
     </div>
 
-    <!-- Patient Status -->
     <div class="col-lg-4">
         <div class="card border-0 shadow h-100 bg-white rounded-4">
             <div class="card-header bg-transparent py-3 border-0">
@@ -105,7 +112,6 @@
         </div>
     </div>
 
-    <!-- Appointment Status -->
     <div class="col-lg-4">
         <div class="card border-0 shadow h-100 bg-white rounded-4">
             <div class="card-header bg-transparent py-3 border-0">
@@ -126,7 +132,7 @@
     // charts config
     Chart.defaults.font.family = "'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif";
     Chart.defaults.color = '#6c757d';
-    
+
     const opts = {
         responsive: true,
         maintainAspectRatio: false,
@@ -141,43 +147,40 @@
         }
     };
 
-    // 1. doctors by dept
     new Chart(document.getElementById('deptChart'), {
         type: 'pie',
         data: {
             labels: {{ dept_labels | default([]) | tojson }},
-            datasets: [{
-                data: {{ dept_data | default ([]) | tojson }},
-                backgroundColor: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14'],
-                borderWidth: 0
+        datasets: [{
+            data: {{ dept_data | default ([]) | tojson }},
+        backgroundColor: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107'],
+        borderWidth: 0
             }]
         },
         options: opts
     });
 
-    // 2. patient status
     new Chart(document.getElementById('patientStatusChart'), {
         type: 'pie',
         data: {
             labels: {{ patient_status_labels | default([]) | tojson }},
-            datasets: [{
-                data: {{ patient_status_data | default ([]) | tojson }},
-                backgroundColor: ['#198754', '#dc3545'],
-                borderWidth: 0
+        datasets: [{
+            data: {{ patient_status_data | default ([]) | tojson }},
+        backgroundColor: ['#198754', '#dc3545'],
+        borderWidth: 0
             }]
         },
         options: opts
     });
 
-    // 3. appt status
     new Chart(document.getElementById('apptStatusChart'), {
         type: 'pie',
         data: {
             labels: {{ appt_status_labels | default([]) | tojson }},
-            datasets: [{
-                data: {{ appt_status_data | default ([]) | tojson }},
-                backgroundColor: ['#ffc107', '#198754', '#dc3545'],
-                borderWidth: 0
+        datasets: [{
+            data: {{ appt_status_data | default ([]) | tojson }},
+        backgroundColor: ['#ffc107', '#198754', '#dc3545'],
+        borderWidth: 0
             }]
         },
         options: opts

@@ -27,7 +27,8 @@
     {% if appt.treatment %}
     <div class="card mb-3 border-primary">
         <div class="card-header bg-light d-flex justify-content-between">
-            <span>{{ appt.appointment_start.strftime('%Y-%m-%d') }} - Dr. {{ appt.doctor.user.name }}</span>
+            <span>{{ appt.appointment_start.strftime('%Y-%m-%d') }} - {{ appt.doctor.user.name }} ({{
+                appt.doctor.department.name }})</span>
             <span class="badge bg-success">Completed</span>
         </div>
         <div class="card-body">

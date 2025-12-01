@@ -29,15 +29,12 @@ class Appointment(db.Model):
         if self.status == new_status:
             return True
         
-        # Cannot change from COMPLETED or CANCELLED
         if self.status in [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED]:
             return False
             
-        # Can cancel BOOKED
         if new_status == AppointmentStatus.CANCELLED:
             return self.status == AppointmentStatus.BOOKED
             
-        # Can complete BOOKED
         if new_status == AppointmentStatus.COMPLETED:
             return self.status == AppointmentStatus.BOOKED
             

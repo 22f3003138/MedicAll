@@ -29,7 +29,6 @@ def seed_database():
         else:
             print(" - Admin exists")
 
-        # 2. Departments
         print("Checking Departments...")
         depts_data = [
             {'name': 'Cardiology', 'desc': 'Heart and cardiovascular care'},
@@ -52,7 +51,6 @@ def seed_database():
         
         db.session.commit()
         
-        # Refresh IDs
         for name in dept_map:
             if not dept_map[name].id:
                 dept_map[name] = Department.query.filter_by(name=name).first()
@@ -135,7 +133,6 @@ def seed_database():
             for i in range(14):
                 day = today + timedelta(days=i)
                 
-                # check overlap or existing
                 exists = DoctorAvailability.query.filter_by(doctor_id=doc.id, date=day).first()
                 if not exists:
                     slot1 = DoctorAvailability(

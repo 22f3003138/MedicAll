@@ -21,7 +21,6 @@ def dashboard():
     # get depts
     departments = Department.query.all()
     
-    # chart 1: monthly history
     hist_stats = db.session.query(func.strftime('%Y-%m', Appointment.appointment_start), func.count(Appointment.id))\
         .filter(Appointment.patient_id == current_user.patient_profile.id)\
         .group_by(func.strftime('%Y-%m', Appointment.appointment_start))\
@@ -30,7 +29,6 @@ def dashboard():
     h_labels = [s[0] for s in hist_stats]
     h_data = [s[1] for s in hist_stats]
     
-    # chart 2: status breakdown
     status_stats = db.session.query(Appointment.status, db.func.count(Appointment.id))\
         .filter(Appointment.patient_id == current_user.patient_profile.id)\
         .group_by(Appointment.status).all()
@@ -106,12 +104,11 @@ def doctors():
     if dept_id:
         q = q.filter(DoctorProfile.department_id == dept_id)
     if avail_date:
-        # filter by availability date
         try:
             date_obj = datetime.strptime(avail_date, '%Y-%m-%d').date()
             q = q.join(DoctorAvailability).filter(DoctorAvailability.date == date_obj)
         except ValueError:
-            pass # ignore bad date
+            pass
         
     doctors = q.all()
     departments = Department.query.all()

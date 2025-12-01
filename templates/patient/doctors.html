@@ -20,7 +20,8 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <input type="date" name="date" class="form-control" value="{{ selected_date }}" min="{{ today }}" placeholder="Availability Date">
+                <input type="date" name="date" class="form-control" value="{{ selected_date }}" min="{{ today }}"
+                    placeholder="Availability Date">
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">Search</button>
@@ -34,7 +35,7 @@
     <div class="col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title">Dr. {{ doctor.name }}</h5>
+                <h5 class="card-title">{{ doctor.name }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{ doctor.doctor_profile.department.name }}</h6>
                 <p class="card-text">
                     <strong>Qualification:</strong> {{ doctor.doctor_profile.qualification }}<br>

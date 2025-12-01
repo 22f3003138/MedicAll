@@ -7,18 +7,20 @@
         <p class="text-muted mb-0">Welcome back, {{ current_user.name }}</p>
         <div class="d-flex gap-2 mt-2 mt-md-0">
             <a href="{{ url_for('patient.doctors') }}" class="btn btn-primary btn-sm shadow-sm rounded-pill px-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-plus-lg me-1" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z" />
                 </svg>
                 Book Appointment
             </a>
-            <a href="{{ url_for('patient.history') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">History</a>
+            <a href="{{ url_for('patient.history') }}"
+                class="btn btn-outline-secondary btn-sm rounded-pill px-3">History</a>
             <a href="{{ url_for('patient.profile') }}" class="btn btn-outline-dark btn-sm rounded-pill px-3">Profile</a>
         </div>
     </div>
 </div>
 
-<!-- Departments -->
 <div class="mb-4">
     <h5 class="fw-bold mb-3">Medical Departments</h5>
     <div class="row g-3">
@@ -27,13 +29,17 @@
             <div class="card h-100 border-0 shadow text-center card-hover bg-white rounded-4">
                 <div class="card-body">
                     <div class="mb-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-hospital" viewBox="0 0 16 16">
-                            <path d="M8.5 5.034v1.1l.953-.55.5.867L9 6.034V7h1v.634l.549-.317.5.866-1 .576v1.35h-1V8.692l-.953.55-.5-.867L8 7.892V7H7v-.867l-.953.55-.5-.866L6.5 5.234V4.5h-1V3h1v-.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v.5h1v1.5h-1v.534zM6 3a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-1.5a.5.5 0 0 0-.5-.5H6z"/>
-                            <path d="M13.5 9h-1.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h1.5a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm-1.5.5h1v2h-1v-2zm-3.5-.5h-1.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h1.5a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm-1.5.5h1v2h-1v-2zM2 9a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H2z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="bi bi-hospital" viewBox="0 0 16 16">
+                            <path
+                                d="M8.5 5.034v1.1l.953-.55.5.867L9 6.034V7h1v.634l.549-.317.5.866-1 .576v1.35h-1V8.692l-.953.55-.5-.867L8 7.892V7H7v-.867l-.953.55-.5-.866L6.5 5.234V4.5h-1V3h1v-.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v.5h1v1.5h-1v.534zM6 3a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-1.5a.5.5 0 0 0-.5-.5H6z" />
+                            <path
+                                d="M13.5 9h-1.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h1.5a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm-1.5.5h1v2h-1v-2zm-3.5-.5h-1.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h1.5a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm-1.5.5h1v2h-1v-2zM2 9a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H2z" />
                         </svg>
                     </div>
                     <h6 class="card-title fw-bold text-dark">{{ dept.name }}</h6>
-                    <a href="{{ url_for('patient.doctors', department_id=dept.id) }}" class="stretched-link text-decoration-none text-muted small">View Doctors</a>
+                    <a href="{{ url_for('patient.doctors', department_id=dept.id) }}"
+                        class="stretched-link text-decoration-none text-muted small">View Doctors</a>
                 </div>
             </div>
         </div>
@@ -42,12 +48,12 @@
 </div>
 
 <div class="row g-4">
-    <!-- Appointments List -->
     <div class="col-lg-8">
         <div class="card border-0 shadow h-100 bg-white rounded-4 overflow-hidden">
             <div class="card-header bg-transparent py-3 border-0 d-flex justify-content-between align-items-center">
                 <h5 class="card-title fw-bold mb-0">My Appointments</h5>
-                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ appointments|length }} Active</span>
+                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ appointments|length }}
+                    Active</span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -64,33 +70,45 @@
                         <tbody>
                             {% for appt in appointments %}
                             <tr>
-                                <td class="ps-4 py-3 fw-medium">{{ appt.appointment_start.strftime('%H:%M') }} <br> <small class="text-muted">{{ appt.appointment_start.strftime('%Y-%m-%d') }}</small></td>
+                                <td class="ps-4 py-3 fw-medium">{{ appt.appointment_start.strftime('%H:%M') }} <br>
+                                    <small class="text-muted">{{ appt.appointment_start.strftime('%Y-%m-%d') }}</small>
+                                </td>
                                 <td class="py-3">
-                                    <div class="fw-bold text-dark">Dr. {{ appt.doctor.user.name }}</div>
+                                    <div class="fw-bold text-dark">{{ appt.doctor.user.name }}</div>
                                 </td>
                                 <td class="py-3 text-muted">{{ appt.doctor.department.name }}</td>
                                 <td class="py-3">
-                                    <span class="badge rounded-pill bg-{{ 'success' if appt.status == 'COMPLETED' else 'warning-subtle-dark' if appt.status == 'BOOKED' else 'danger' }} bg-opacity-10 text-{{ 'success' if appt.status == 'COMPLETED' else 'warning-dark' if appt.status == 'BOOKED' else 'danger' }} px-3">
+                                    <span
+                                        class="badge rounded-pill bg-{{ 'success' if appt.status == 'COMPLETED' else 'warning-subtle-dark' if appt.status == 'BOOKED' else 'danger' }} bg-opacity-10 text-{{ 'success' if appt.status == 'COMPLETED' else 'warning-dark' if appt.status == 'BOOKED' else 'danger' }} px-3">
                                         {{ appt.status }}
                                     </span>
                                 </td>
                                 <td class="pe-4 py-3 text-end">
                                     {% if appt.status == 'BOOKED' %}
                                     <div class="btn-group">
-                                        <!-- Reschedule Button -->
-                                        <form action="{{ url_for('patient.reschedule_appointment', id=appt.id) }}" method="POST" class="d-inline me-1">
-                                            <button type="submit" class="btn btn-sm btn-outline-info rounded-circle" onclick="return confirm('To reschedule, this appointment will be cancelled and you will be redirected to book a new slot. Continue?')" title="Reschedule">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
-                                                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-                                                    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                                        <form action="{{ url_for('patient.reschedule_appointment', id=appt.id) }}"
+                                            method="POST" class="d-inline me-1">
+                                            <button type="submit" class="btn btn-sm btn-outline-info rounded-circle"
+                                                onclick="return confirm('To reschedule, this appointment will be cancelled and you will be redirected to book a new slot. Continue?')"
+                                                title="Reschedule">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
                                                 </svg>
                                             </button>
                                         </form>
-                                        <!-- Cancel Button -->
-                                        <form action="{{ url_for('patient.cancel_appointment', id=appt.id) }}" method="POST" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" onclick="return confirm('Are you sure you want to cancel?')" title="Cancel">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                        <form action="{{ url_for('patient.cancel_appointment', id=appt.id) }}"
+                                            method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle"
+                                                onclick="return confirm('Are you sure you want to cancel?')"
+                                                title="Cancel">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                                                 </svg>
                                             </button>
                                         </form>
@@ -102,8 +120,10 @@
                             <tr>
                                 <td colspan="5" class="text-center text-muted py-5">
                                     <div class="mb-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-calendar text-light" viewBox="0 0 16 16">
-                                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                            fill="currentColor" class="bi bi-calendar text-light" viewBox="0 0 16 16">
+                                            <path
+                                                d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
                                         </svg>
                                     </div>
                                     No active appointments.
@@ -116,10 +136,8 @@
             </div>
         </div>
     </div>
-    
-    <!-- Charts Column -->
+
     <div class="col-lg-4">
-        <!-- Monthly Activity Chart -->
         <div class="card border-0 shadow mb-4 bg-white rounded-4">
             <div class="card-header bg-transparent py-3 border-0">
                 <h5 class="card-title fw-bold mb-0">Monthly Activity</h5>
@@ -130,9 +148,8 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Status Distribution Chart -->
-        <div class="card border-0 shadow h-100 bg-white rounded-4">
+
+        <div class="card border-0 shadow bg-white rounded-4">
             <div class="card-header bg-transparent py-3 border-0">
                 <h5 class="card-title fw-bold mb-0">Appointment Status</h5>
             </div>
@@ -150,7 +167,7 @@
 <script>
     Chart.defaults.font.family = "'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif";
     Chart.defaults.color = '#6c757d';
-    
+
     const opts = {
         responsive: true,
         maintainAspectRatio: false,
@@ -159,7 +176,6 @@
         }
     };
 
-    // 1. monthly activity
     const ctxHist = document.getElementById('historyChart');
     const grad = ctxHist.getContext('2d').createLinearGradient(0, 0, 0, 200);
     grad.addColorStop(0, 'rgba(13, 202, 240, 0.5)');
@@ -169,85 +185,84 @@
         type: 'line',
         data: {
             labels: {{ history_labels | default([]) | tojson }},
-            datasets: [{
-                label: 'Appointments',
-                data: {{ history_data | default ([]) | tojson }},
-                fill: true,
-                backgroundColor: grad,
-                borderColor: '#0dcaf0',
-                tension: 0.4,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: '#0dcaf0',
-                pointBorderWidth: 2
+        datasets: [{
+            label: 'Appointments',
+            data: {{ history_data | default ([]) | tojson }},
+        fill: true,
+        backgroundColor: grad,
+        borderColor: '#0dcaf0',
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#0dcaf0',
+        pointBorderWidth: 2
             }]
         },
         options: {
-            ...opts,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    padding: 10,
-                    cornerRadius: 4,
-                    displayColors: false,
-                    callbacks: {
-                        title: function(ctx) {
-                            return 'Month: ' + ctx[0].label;
-                        }
+        ...opts,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                padding: 10,
+                cornerRadius: 4,
+                displayColors: false,
+                callbacks: {
+                    title: function (ctx) {
+                        return 'Month: ' + ctx[0].label;
                     }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        borderDash: [2, 4],
-                        color: '#f0f0f0',
-                        drawBorder: false,
-                    },
-                    ticks: {
-                        stepSize: 1,
-                        color: '#6c757d'
-                    }
-                },
-                x: {
-                    grid: { display: false }
                 }
             }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    borderDash: [2, 4],
+                    color: '#f0f0f0',
+                    drawBorder: false,
+                },
+                ticks: {
+                    stepSize: 1,
+                    color: '#6c757d'
+                }
+            },
+            x: {
+                grid: { display: false }
+            }
         }
+    }
     });
 
-    // 2. status breakdown
     const ctxStat = document.getElementById('statusChart');
     new Chart(ctxStat, {
         type: 'doughnut',
         data: {
             labels: {{ status_labels | default([]) | tojson }},
-            datasets: [{
-                data: {{ status_data | default ([]) | tojson }},
-                backgroundColor: ['#ffc107', '#198754', '#dc3545'],
-                borderWidth: 0,
-                hoverOffset: 4
+        datasets: [{
+            data: {{ status_data | default ([]) | tojson }},
+        backgroundColor: ['#ffc107', '#198754', '#dc3545'],
+        borderWidth: 0,
+        hoverOffset: 4
             }]
         },
         options: {
-            ...opts,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'right',
-                    labels: {
-                        usePointStyle: true,
-                        boxWidth: 8,
-                        padding: 15,
-                        font: { size: 11 }
-                    }
+        ...opts,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'right',
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 8,
+                    padding: 15,
+                    font: { size: 11 }
                 }
-            },
-            cutout: '65%'
-        }
+            }
+        },
+        cutout: '65%'
+    }
     });
 </script>
 {% endblock %}
