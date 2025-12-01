@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  title: MedicAll API
+  description: API for the MedicAll Hospital Management System
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Main API server
+paths:
+  /doctors:
+    get:
+      summary: Get all doctors
+      description: Retrieve a list of all doctors.
+      responses:
+        '200':
+          description: A list of doctors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Doctor'
+  /doctors/{id}:
+    get:
+      summary: Get a doctor by ID
+      description: Retrieve details of a specific doctor by their ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the doctor
+      responses:
+        '200':
+          description: Doctor details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doctor'
+        '404':
+          description: Doctor not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /patients/{id}:
+    get:
+      summary: Get a patient by ID
+      description: Retrieve details of a specific patient by their ID. Requires authentication.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the patient
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Patient not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /appointments:
+    get:
+      summary: Get appointments
+      description: Retrieve appointments for the authenticated user.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: A list of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+    post:
+      summary: Create an appointment
+      description: Book a new appointment. Only patients can book appointments.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - slot_id
+                - reason
+              properties:
+                slot_id:
+                  type: integer
+                  description: ID of the doctor's availability slot
+                reason:
+                  type: string
+                  description: Reason for the appointment
+      responses:
+        '201':
+          description: Appointment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden (only patients can book)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Slot not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Slot overlaps with existing appointment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+  schemas:
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [DOCTOR]
+        department:
+          type: string
+        qualification:
+          type: string
+        bio:
+          type: string
+        phone:
+          type: string
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [PATIENT]
+        phone:
+          type: string
+        dob:
+          type: string
+          format: date
+        gender:
+          type: string
+        address:
+          type: string
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        patient_name:
+          type: string
+        doctor_name:
+          type: string
+        department:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+        reason:
+          type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
