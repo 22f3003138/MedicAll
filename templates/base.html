@@ -68,21 +68,20 @@
         .is-valid {
             border-color: #198754;
         }
-        
-        /* Custom Dark Warning Color */
+
         .text-warning-dark {
             color: #d39e00 !important;
         }
-        
+
         .bg-warning-subtle-dark {
             background-color: rgba(255, 193, 7, 0.2) !important;
         }
-        
+
         .btn-outline-warning-dark {
             color: #d39e00;
             border-color: #d39e00;
         }
-        
+
         .btn-outline-warning-dark:hover {
             background-color: #d39e00;
             color: white;
@@ -106,8 +105,10 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow rounded-4 m-3 sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center fw-bold text-primary" href="{{ url_for('main.index') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-heart-pulse-fill me-2" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.916-.004L6.16 3.732 4.53 8.655A.5.5 0 0 1 4.066 9H1.475ZM.5 9a.5.5 0 0 1-.428-.742l2.5-6a.5.5 0 0 1 .956.138l.85 2.547 1.27-4.433a.5.5 0 0 1 .964.027L8.46 5.414l.875-2.188a.5.5 0 0 1 .927 0l2.5 6.25A.5.5 0 0 1 12.277 10H15.5a.5.5 0 0 1 0 1h-3.563a.5.5 0 0 1-.464-.314L10.097 6.13l-1.188 2.97a.5.5 0 0 1-.938-.038l-1.267-3.486-1.458 5.103a.5.5 0 0 1-.96-.027l-1.767-4.241L.928 9H.5Z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                    class="bi bi-heart-pulse-fill me-2" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M1.475 9C2.702 10.84 4.779 12.871 8 15c3.221-2.129 5.298-4.16 6.525-6H12a.5.5 0 0 1-.464-.314l-1.457-3.642-1.598 5.593a.5.5 0 0 1-.916-.004L6.16 3.732 4.53 8.655A.5.5 0 0 1 4.066 9H1.475ZM.5 9a.5.5 0 0 1-.428-.742l2.5-6a.5.5 0 0 1 .956.138l.85 2.547 1.27-4.433a.5.5 0 0 1 .964.027L8.46 5.414l.875-2.188a.5.5 0 0 1 .927 0l2.5 6.25A.5.5 0 0 1 12.277 10H15.5a.5.5 0 0 1 0 1h-3.563a.5.5 0 0 1-.464-.314L10.097 6.13l-1.188 2.97a.5.5 0 0 1-.938-.038l-1.267-3.486-1.458 5.103a.5.5 0 0 1-.96-.027l-1.767-4.241L.928 9H.5Z" />
                 </svg>
                 MedicAll
             </a>
@@ -124,19 +125,25 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-medium" href="#" role="button" data-bs-toggle="dropdown">
-                            <div class="bg-primary bg-opacity-10 rounded-circle p-1 me-2 d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-medium" href="#"
+                            role="button" data-bs-toggle="dropdown">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-1 me-2 d-flex justify-content-center align-items-center"
+                                style="width: 32px; height: 32px;">
                                 <span class="text-primary fw-bold">{{ current_user.name[0] | upper }}</span>
                             </div>
                             {{ current_user.name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2">
-                            <li><span class="dropdown-header">Signed in as <br><strong>{{ current_user.email }}</strong></span></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li><span class="dropdown-header">Signed in as <br><strong>{{ current_user.email
+                                        }}</strong></span></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             {% if current_user.role == 'PATIENT' %}
                             <li><a class="dropdown-item" href="{{ url_for('patient.profile') }}">My Profile</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Sign Out</a></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Sign Out</a>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
@@ -144,7 +151,8 @@
                         <a class="nav-link fw-medium" href="{{ url_for('auth.login') }}">Login</a>
                     </li>
                     <li class="nav-item ms-2">
-                        <a class="btn btn-primary rounded-pill px-4 fw-medium" href="{{ url_for('auth.register') }}">Get Started</a>
+                        <a class="btn btn-primary rounded-pill px-4 fw-medium" href="{{ url_for('auth.register') }}">Get
+                            Started</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -158,12 +166,14 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="toast align-items-center text-white bg-{{ category if category != 'message' else 'info' }} border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast align-items-center text-white bg-{{ category if category != 'message' else 'info' }} border-0 shadow"
+            role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                     {{ message }}
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
             </div>
         </div>
         {% endfor %}

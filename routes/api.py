@@ -20,7 +20,6 @@ def get_doctor(id):
 @api.route('/patients/<int:id>', methods=['GET'])
 @login_required
 def get_patient(id):
-    # Access control: Only Admin, Doctor, or the Patient themselves
     if current_user.role == Role.PATIENT and current_user.id != id:
         return jsonify({'error': 'Access denied'}), 403
         
