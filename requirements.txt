@@ -11,3 +11,4 @@ python-dotenv==1.0.0
 SQLAlchemy==2.0.44
 typing_extensions==4.15.0
 Werkzeug==3.0.1
+gunicorn==21.2.0

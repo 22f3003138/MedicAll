@@ -54,5 +54,5 @@ app.register_blueprint(patient_blueprint)
 app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
-    app.run(debug=app.config['DEBUG'])
+    app.run()
 
